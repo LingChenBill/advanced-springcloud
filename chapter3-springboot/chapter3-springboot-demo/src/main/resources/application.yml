@@ -1,0 +1,17 @@
+server:
+  port: 8008
+
+info:
+  author:
+    name: aoho
+  build:
+    artifact: "@project.artifactId@"
+    name: "@project.name@"
+    version: "@project.version@"
+
+sms:
+  retry-limitation-minutes: 1
+  validity-minutes: 2
+  types:
+    - register
+    - login

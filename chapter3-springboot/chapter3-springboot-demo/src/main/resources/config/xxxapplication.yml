@@ -1,0 +1,10 @@
+server:
+  port: 8008
+
+info:
+  author:
+    name: aoho-config
+  build:
+    artifact: "@project.artifactId@"
+    name: "@project.name@"
+    version: "@project.version@"
