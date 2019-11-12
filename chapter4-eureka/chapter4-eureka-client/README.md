@@ -12,4 +12,6 @@ restTemplate.getForEntity("http://EUREKA-CLIENT-SERVER/hello/{name}",
 3. 通过RestTemplate进行负载均衡  
 @LoadBalanced  
 
+4. 服务调用接口  
+http://localhost:8765/ask  
                 
