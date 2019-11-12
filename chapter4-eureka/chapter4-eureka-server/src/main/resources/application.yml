@@ -1,0 +1,23 @@
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: chapter4-eureka-server
+    # 一台主机可以启动多个属于同一服务的服务实例
+    instance-id: ${spring.application.name}:${vcap.application.instance-id:${spring.application.instance-id:${random.value}}}
+
+  client:
+    # 表明该服务不会向eureka server注册自己的信息
+    register-with-eureka: false
+    # 表明该服务不会向eureka server获取注册信息
+    fetch-registry: false
+    # eureka server注册中心的地址，用于client与server进行交流
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+spring:
+  application:
+    name: eureka-server
+
+

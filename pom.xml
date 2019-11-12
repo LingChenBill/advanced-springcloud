@@ -11,5 +11,6 @@
 
   <modules>
     <module>chapter3-springboot</module>
+    <module>chapter4-eureka</module>
   </modules>
 </project>
