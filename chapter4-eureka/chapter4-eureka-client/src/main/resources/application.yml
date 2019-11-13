@@ -15,3 +15,7 @@ eureka:
 spring:
   application:
     name: eureka-client
+
+logging:
+  level:
+    org.springframework: DEBUG
