@@ -1,0 +1,15 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: feign-service
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+     # com.netflix.client.ClientException: Load balancer does not have available server for client: feign-service
+#    instance-id: server:1
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

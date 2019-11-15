@@ -12,5 +12,6 @@
   <modules>
     <module>chapter3-springboot</module>
     <module>chapter4-eureka</module>
+    <module>chapter5-openFeign</module>
   </modules>
 </project>
