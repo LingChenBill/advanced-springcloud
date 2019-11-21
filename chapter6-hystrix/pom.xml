@@ -63,17 +63,14 @@
       <artifactId>spring-cloud-starter-openfeign</artifactId>
     </dependency>
 
-    <!--<dependency>-->
-      <!--<groupId>com.lc</groupId>-->
-      <!--<artifactId>chapter-common</artifactId>-->
-      <!--<version>1.0-SNAPSHOT</version>-->
-    <!--</dependency>-->
+    <!--common config.-->
     <dependency>
       <groupId>com.lc</groupId>
       <artifactId>chapter-common</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 
+    <!--common jar contains lombok.-->
     <!--lombok config.-->
     <!--<dependency>-->
       <!--<groupId>org.projectlombok</groupId>-->
