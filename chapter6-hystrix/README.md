@@ -58,5 +58,39 @@ http://localhost:8876/instance/feign/my-application
 8. HystrixCollapser请求合并  
 http://localhost:8876/instance/batch/test1  
 
+9. 资源隔离  
+在Hystrix中，主要有两种策略进行资源隔离。  
+信号量隔离策略  
+线程隔离策略  
+
+10. 异步与异步回调执行命令  
+注解:  
+@HystrixCommand(fallbackMethod = "instanceInfoGetFailAsync")  
+指定回滚方法: instanceInfoGetFailAsync  
+
+http://localhost:8876/instance/async/my-app  
+
+http://localhost:8876/instance/observable/my-app  
+
+11. 继承HystrixCommand  
+extends HystrixCommand<Instance>   
+访问:  
+http://localhost:8876/instance/custom/my-app  
+
+通过HystrixCommand#Setter的方式在构造函数中对CustomHystrixCommand的默认配置进行修改。  
+
+12. 继承HystrixObservableCommand来获取实例  
+
+extends HystrixObservableCommand  
+访问:  
+http://localhost:8876/instance/customObservable/my-app  
+
+13. 继承HystrixCollapser  
+extends HystrixCollapser<List<Instance>, Instance, String>  
+
+访问:  
+http://localhost:8876/instance/customBatch/test  
+
+
 
 

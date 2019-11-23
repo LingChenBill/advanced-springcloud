@@ -5,11 +5,15 @@ import com.lc.dto.Instance;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCollapser;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.netflix.hystrix.contrib.javanica.annotation.ObservableExecutionMode;
+import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
 import com.netflix.hystrix.contrib.javanica.conf.HystrixPropertiesManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import rx.Observable;
+import rx.functions.Action1;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +85,118 @@ public class InstanceService {
         }
 
         return instances;
+    }
+
+    /**
+     * 异步以及异步回调执行命令。
+     *
+     * @param serviceId
+     * @return
+     */
+    @HystrixCommand(fallbackMethod = "instanceInfoGetFailAsync")
+    public Future<Instance> getInstanceByServiceIdAsync(String serviceId) {
+        log.info("Can not get Instance by serviceId {}", serviceId);
+
+        return new AsyncResult<Instance>() {
+            @Override
+            public Instance invoke() {
+                return restTemplate.getForEntity("http://FEIGN-SERVICE/feign-service/instance/{serviceId}", Instance.class, serviceId).getBody();
+            }
+        };
+    }
+
+    /**
+     * 异步回调的失败回滚方法。
+     *
+     * @param serviceId
+     * @return
+     */
+    @HystrixCommand
+    public Future<Instance> instanceInfoGetFailAsync(String serviceId) {
+        log.info("Can not get Instance by serviceId {}", serviceId);
+
+        return new AsyncResult<Instance>() {
+            @Override
+            public Instance invoke() {
+                return new Instance("error", "error", 0);
+            }
+        };
+    }
+
+    /**
+     * 异步回调执行命令。
+     *
+     * @param serviceId
+     * @return
+     */
+    @HystrixCommand(fallbackMethod = "instanceInfoGetFailObservable",
+                    observableExecutionMode = ObservableExecutionMode.LAZY)
+    public Observable<Instance> getInstanceByServiceIdObservable(String serviceId) {
+        return Observable.create(
+                subscriber -> {
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onNext(restTemplate.getForEntity("http://FEIGN-SERVICE/feign-service/instance/{serviceId}",
+                                Instance.class, serviceId).getBody());
+                        subscriber.onCompleted();
+                    }
+                }
+        );
+    }
+
+    /**
+     * 异步回调执行命令的失败回滚方法。
+     *
+     * @param serviceId
+     * @return
+     */
+    public Observable<Instance> instanceInfoGetFailObservable(String serviceId) {
+        log.info("Can not get Instance by serviceId {}", serviceId);
+        return Observable.create(
+                subscriber -> {
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onNext(new Instance("error", "error", 0));
+                        subscriber.onCompleted();
+                    }
+                }
+        );
+    }
+
+    /**
+     * 通过继承HystrixCommand的方式来获取Instance实例。
+     *
+     * @param serviceId
+     * @return
+     */
+    public Instance getInstanceByServiceIdCustom(String serviceId) {
+        CustomHystrixCommand customHystrixCommand = new CustomHystrixCommand(restTemplate, serviceId);
+        Instance instance = customHystrixCommand.execute();
+        return instance;
+    }
+
+    /**
+     * 通过继承HystrixObservableCommand方式来获取Instance实例。
+     *
+     * @param serviceId
+     * @return
+     */
+    public Instance getInstanceByServiceIdCustomObservable(String serviceId) {
+        // 每次创建都要创建一个新的命令。
+        CustomHystrixObservableCommand observableCommand = new CustomHystrixObservableCommand(restTemplate, serviceId);
+        Observable<Instance> observe = observableCommand.observe();
+        Instance instance = observe.toBlocking().single();
+
+        CustomHystrixObservableCommand observableCommand2 = new CustomHystrixObservableCommand(restTemplate, serviceId);
+        Observable toObservable = observableCommand2.toObservable();
+
+        // 通过订阅的方式定义回调函数获取执行结果。
+        toObservable.subscribe(new Action1<Instance>() {
+            @Override
+            public void call(Instance instance1) {
+                log.info("Instance observable: {}", instance1);
+            }
+        });
+
+        return instance;
     }
 
 }
