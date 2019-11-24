@@ -1,0 +1,10 @@
+server:
+  port: 8083
+
+ribbon-client:
+  eureka:
+    # 将Eureka关闭，则Ribbon无法从Eureka中获取服务端列表信息。
+    enabled: false
+  # listOfServers可以设置服务端列表。
+  listOfServers: 127.0.0.1:8081,127.0.0.1:8082
+  serverListRefreshInterval: 15000
