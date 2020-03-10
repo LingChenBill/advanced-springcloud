@@ -5,18 +5,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.lc</groupId>
-  <artifactId>cloud-book</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>chapter8-gateway</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>chapter8-gateway</name>
 
   <modules>
-    <module>chapter-common</module>
-    <module>chapter3-springboot</module>
-    <module>chapter4-eureka</module>
-    <module>chapter5-openFeign</module>
-    <module>chapter6-hystrix</module>
-    <module>chapter7-ribbon</module>
-    <module>chapter8-gateway</module>
-    <module>chapter12-cloud-security</module>
+    <module>chapter8-gateway-server</module>
+    <module>chapter8-gateway-user</module>
   </modules>
+
 </project>
