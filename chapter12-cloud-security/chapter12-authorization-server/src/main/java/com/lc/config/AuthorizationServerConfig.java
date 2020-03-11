@@ -47,7 +47,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 客户端安全码
                 .secret("secret")
                 // 回调地址（第三方客户端的IP地址）
-                .redirectUris("http://172.21.0.16:8888/");
+                .redirectUris("http://152.136.104.216:8888/");
     }
 
     /**
