@@ -11,8 +11,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
+import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,17 +35,22 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 
-        resources.tokenStore(new JwtTokenStore(accessTokenConverter()))
+        //resources.tokenStore(new JwtTokenStore(accessTokenConverter()))
+        //        .stateless(true);
+
+        resources.tokenServices(tokenServices())
                 .stateless(true);
+    }
+
+    @Bean
+    public ResourceServerTokenServices tokenServices() {
 
         // 从AuthorizationServer中获取令牌服务。
         RemoteTokenServices tokenServices = new RemoteTokenServices();
-
         tokenServices.setAccessTokenConverter(accessTokenConverter());
 
-
+        // 为restTemplate配置异常处理器，忽略400错误
         RestTemplate restTemplate = restTemplate();
-
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
 
             @Override
@@ -60,13 +65,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         });
 
         tokenServices.setRestTemplate(restTemplate);
-
         tokenServices.setCheckTokenEndpointUrl("http://AUTHORIZATION-SERVER/oauth/check_token");
         tokenServices.setClientId("client");
         tokenServices.setClientSecret("secret");
 
-        resources.tokenServices(tokenServices)
-                .stateless(true);
+        return tokenServices;
+
     }
 
     @Bean

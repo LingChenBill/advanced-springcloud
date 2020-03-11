@@ -14,7 +14,7 @@
   <modules>
     <module>chapter12-authorization-server</module>
     <module>chapter12-resource-server</module>
-
+    <module>chapter12-oauth2-client</module>
   </modules>
 
 </project>

@@ -41,13 +41,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 客户端ID
                 .withClient("client")
                 // 客户端可以使用的授权类型
-                .authorizedGrantTypes("authorization_code", "password", "refresh_token")
+                .authorizedGrantTypes("authorization_code", "password", "refresh_token", "implicit")
                 // 允许请求范围
                 .scopes("all")
                 // 客户端安全码
                 .secret("secret")
-                // 回调地址
-                .redirectUris("http://localhost:8888/");
+                // 回调地址（第三方客户端的IP地址）
+                .redirectUris("http://172.21.0.16:8888/");
     }
 
     /**
